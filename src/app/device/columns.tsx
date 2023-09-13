@@ -266,25 +266,10 @@ export const columns: ColumnDef<Device>[] = [
       return <p className="truncate">{lastconnect}</p>
     },
   },
-  // {
-  //   accessorKey: "amount",
-  //   // header: "Amount",
-  //   header: () => <div className="text-right">Amount</div>,
-  //   cell: ({ row }) => {
-  //     const amount = parseFloat(row.getValue("amount"))
-  //     const formatted = new Intl.NumberFormat("en-US", {
-  //       style: "currency",
-  //       currency: "USD",
-  //     }).format(amount)
-
-  //     return <div className="text-right font-medium">{formatted}</div>
-  //   },
-  // },
   {
     accessorKey: "actions",
     cell: ({ row }) => {
       const device = row.original
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

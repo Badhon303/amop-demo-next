@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ThemeToggle } from "@/components/theme-toggle"
+// import { ThemeToggle } from "@/components/theme-toggle"
 
 import { downloadToExcel } from "@/lib/xlsx"
 
@@ -82,7 +82,7 @@ export function DataTable<TData, TValue>({
         <Button onClick={() => downloadToExcel()} className="ml-4">
           Export
         </Button>
-        <ThemeToggle className="mx-4" />
+        {/* <ThemeToggle className="mx-4" /> */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">

@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 // import { ThemeToggle } from "@/components/theme-toggle"
+import { useSearchParams, usePathname } from "next/navigation"
 
 import { downloadToExcel } from "@/lib/xlsx"
 
@@ -67,6 +68,40 @@ export function DataTable<TData, TValue>({
       rowSelection,
     },
   })
+
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const pageNumber = Number(searchParams.get("pageNumber"))
+
+  console.log("pathname: ", pathname)
+
+  //Changes the page number in the url
+  const pageSetTo = (pageNumber: string) => {
+    history.pushState(
+      null,
+      "",
+      `${pathname}?${createQueryString("pageNumber", pageNumber)}`
+    )
+  }
+
+  // Get a new searchParams string by merging the current
+  // searchParams with a provided key/value pair
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams)
+      params.set(name, value)
+
+      return params.toString()
+    },
+    [searchParams]
+  )
+
+  //Sets the page with given page number in the url
+  useEffect(() => {
+    const initialPageNumber = pageNumber ? pageNumber - 1 : 0
+    initialPageNumber < 1 ? initialPageNumber == 1 : initialPageNumber
+    table.setPageIndex(initialPageNumber)
+  }, [])
 
   return (
     <div>
@@ -164,49 +199,43 @@ export function DataTable<TData, TValue>({
         {table.getFilteredSelectedRowModel().rows.length} of{" "}
         {table.getFilteredRowModel().rows.length} row(s) selected.
       </div>
-      {/* <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
-      </div> */}
       <div className="flex items-center justify-end space-x-2 py-4">
         <button
           className="border rounded p-1"
-          onClick={() => table.setPageIndex(0)}
+          onClick={() => {
+            table.setPageIndex(0)
+            pageSetTo("1")
+          }}
           disabled={!table.getCanPreviousPage()}
         >
           {"<<"}
         </button>
         <button
           className="border rounded p-1"
-          onClick={() => table.previousPage()}
+          onClick={() => {
+            table.previousPage()
+            pageSetTo(`${table.getState().pagination.pageIndex}`)
+          }}
           disabled={!table.getCanPreviousPage()}
         >
           {"<"}
         </button>
         <button
           className="border rounded p-1"
-          onClick={() => table.nextPage()}
+          onClick={() => {
+            table.nextPage()
+            pageSetTo(`${table.getState().pagination.pageIndex + 2}`)
+          }}
           disabled={!table.getCanNextPage()}
         >
           {">"}
         </button>
         <button
           className="border rounded p-1"
-          onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+          onClick={() => {
+            table.setPageIndex(table.getPageCount() - 1)
+            pageSetTo(`${table.getPageCount()}`)
+          }}
           disabled={!table.getCanNextPage()}
         >
           {">>"}
@@ -222,10 +251,12 @@ export function DataTable<TData, TValue>({
           | Go to page:
           <input
             type="number"
-            defaultValue={table.getState().pagination.pageIndex + 1}
+            // defaultValue={table.getState().pagination.pageIndex + 1}
+            placeholder={`${table.getState().pagination.pageIndex + 1}`}
             onChange={(e) => {
               const page = e.target.value ? Number(e.target.value) - 1 : 0
               table.setPageIndex(page)
+              pageSetTo(`${page + 1}`)
             }}
             className="border p-1 rounded w-16"
           />

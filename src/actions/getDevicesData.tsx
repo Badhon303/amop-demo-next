@@ -1,7 +1,8 @@
 import { Device } from "@/app/device/columns"
 
+//Gets the device data
 export default async function getDeviceData(): Promise<Device[]> {
-  // Fetch data from your API here.
+  // Fetch data from API here.
   return [
     {
       id: "1",

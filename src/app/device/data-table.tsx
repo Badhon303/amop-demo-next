@@ -73,8 +73,6 @@ export function DataTable<TData, TValue>({
   const pathname = usePathname()
   const pageNumber = Number(searchParams.get("pageNumber"))
 
-  console.log("pathname: ", pathname)
-
   //Changes the page number in the url
   const pageSetTo = (pageNumber: string) => {
     history.pushState(
@@ -199,47 +197,49 @@ export function DataTable<TData, TValue>({
         {table.getFilteredSelectedRowModel().rows.length} of{" "}
         {table.getFilteredRowModel().rows.length} row(s) selected.
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <button
-          className="border rounded p-1"
-          onClick={() => {
-            table.setPageIndex(0)
-            pageSetTo("1")
-          }}
-          disabled={!table.getCanPreviousPage()}
-        >
-          {"<<"}
-        </button>
-        <button
-          className="border rounded p-1"
-          onClick={() => {
-            table.previousPage()
-            pageSetTo(`${table.getState().pagination.pageIndex}`)
-          }}
-          disabled={!table.getCanPreviousPage()}
-        >
-          {"<"}
-        </button>
-        <button
-          className="border rounded p-1"
-          onClick={() => {
-            table.nextPage()
-            pageSetTo(`${table.getState().pagination.pageIndex + 2}`)
-          }}
-          disabled={!table.getCanNextPage()}
-        >
-          {">"}
-        </button>
-        <button
-          className="border rounded p-1"
-          onClick={() => {
-            table.setPageIndex(table.getPageCount() - 1)
-            pageSetTo(`${table.getPageCount()}`)
-          }}
-          disabled={!table.getCanNextPage()}
-        >
-          {">>"}
-        </button>
+      <div className="flex flex-col md:flex-row items-center justify-end space-x-2 py-4">
+        <div className="space-x-2">
+          <button
+            className="border rounded p-1"
+            onClick={() => {
+              table.setPageIndex(0)
+              pageSetTo("1")
+            }}
+            disabled={!table.getCanPreviousPage()}
+          >
+            {"<<"}
+          </button>
+          <button
+            className="border rounded p-1"
+            onClick={() => {
+              table.previousPage()
+              pageSetTo(`${table.getState().pagination.pageIndex}`)
+            }}
+            disabled={!table.getCanPreviousPage()}
+          >
+            {"<"}
+          </button>
+          <button
+            className="border rounded p-1"
+            onClick={() => {
+              table.nextPage()
+              pageSetTo(`${table.getState().pagination.pageIndex + 2}`)
+            }}
+            disabled={!table.getCanNextPage()}
+          >
+            {">"}
+          </button>
+          <button
+            className="border rounded p-1"
+            onClick={() => {
+              table.setPageIndex(table.getPageCount() - 1)
+              pageSetTo(`${table.getPageCount()}`)
+            }}
+            disabled={!table.getCanNextPage()}
+          >
+            {">>"}
+          </button>
+        </div>
         <span className="flex items-center gap-1">
           <div>Page</div>
           <strong>

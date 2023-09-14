@@ -265,6 +265,8 @@ export function DataTable<TData, TValue>({
           value={table.getState().pagination.pageSize}
           onChange={(e) => {
             table.setPageSize(Number(e.target.value))
+            table.setPageIndex(0)
+            pageSetTo("1")
           }}
         >
           {[10, 20, 30, 40, 50].map((pageSize) => (

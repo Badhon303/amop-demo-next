@@ -43,11 +43,13 @@ export const columns: ColumnDef<Device>[] = [
   {
     id: "select",
     header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
+      <div className="flex flex-row">
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected()}
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </div>
     ),
     cell: ({ row }) => (
       <Checkbox
@@ -102,7 +104,7 @@ export const columns: ColumnDef<Device>[] = [
     },
     cell: ({ row }) => {
       const customer = row.getValue("customer") as string
-      return <p className="truncate">{customer}</p>
+      return <p>{customer}</p>
     },
   },
   {
@@ -117,6 +119,10 @@ export const columns: ColumnDef<Device>[] = [
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
+    },
+    cell: ({ row }) => {
+      const iccid = row.getValue("iccid") as string
+      return <p className="break-all">{iccid}</p>
     },
   },
   {
@@ -261,10 +267,10 @@ export const columns: ColumnDef<Device>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => {
-      const lastconnect = row.getValue("lastconnect") as string
-      return <p className="truncate">{lastconnect}</p>
-    },
+    // cell: ({ row }) => {
+    //   const lastconnect = row.getValue("lastconnect") as string
+    //   return <p>{lastconnect}</p>
+    // },
   },
   {
     accessorKey: "actions",

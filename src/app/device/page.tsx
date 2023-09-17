@@ -6,8 +6,8 @@ export default async function DeviceManagement() {
   const data = await getDeviceData()
 
   return (
-    <div className="mx-10 mt-5">
-      <h1 className="text-3xl font-bold mb-5">Device Management Inventory</h1>
+    <div className="bg-white p-8 rounded-2xl">
+      <h1 className="text-xl font-bold mb-5">Device Management Inventory</h1>
       <DataTable columns={columns} data={data} />
     </div>
   )

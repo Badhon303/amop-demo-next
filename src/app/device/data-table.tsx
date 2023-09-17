@@ -110,15 +110,18 @@ export function DataTable<TData, TValue>({
           onChange={(event) =>
             table.getColumn("status")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="max-w-sm bg-white"
         />
         <Button onClick={() => downloadToExcel()} className="ml-4">
           Export
         </Button>
+        <Button className="ml-4" onClick={() => table.toggleAllRowsSelected()}>
+          Select All
+        </Button>
         {/* <ThemeToggle className="mx-4" /> */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
+            <Button variant="outline" className="ml-auto bg-white">
               Columns
             </Button>
           </DropdownMenuTrigger>
@@ -168,6 +171,7 @@ export function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
+                  id="table-row"
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -181,7 +185,7 @@ export function DataTable<TData, TValue>({
                 </TableRow>
               ))
             ) : (
-              <TableRow>
+              <TableRow id="table-row">
                 <TableCell
                   colSpan={columns.length}
                   className="h-24 text-center"
@@ -221,6 +225,7 @@ export function DataTable<TData, TValue>({
           </button>
           <button
             className="border rounded p-1"
+            id="next-page"
             onClick={() => {
               table.nextPage()
               pageSetTo(`${table.getState().pagination.pageIndex + 2}`)
@@ -251,8 +256,8 @@ export function DataTable<TData, TValue>({
           | Go to page:
           <input
             type="number"
-            // defaultValue={table.getState().pagination.pageIndex + 1}
-            placeholder={`${table.getState().pagination.pageIndex + 1}`}
+            defaultValue={table.getState().pagination.pageIndex + 1}
+            // placeholder={`${table.getState().pagination.pageIndex + 1}`}
             onChange={(e) => {
               const page = e.target.value ? Number(e.target.value) - 1 : 0
               table.setPageIndex(page)

@@ -13,7 +13,10 @@ export default function DeviceLayout({
         open ? "ml-[260px]" : "ml-0"
       }  overflow-y-auto no-scrollbar duration-300`}
     >
-      {children}
+      <div className="bg-white p-8 rounded-2xl">
+        <h1 className="text-xl font-bold mb-5">Dashboard</h1>
+        {children}
+      </div>
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { Device } from "@/app/device/columns"
+import { Device } from "@/app/device-management/columns"
 
 //Gets the device data
 export default async function getDeviceData(): Promise<Device[]> {

@@ -97,8 +97,15 @@ export function DataTable<TData, TValue>({
   //Sets the page with given page number in the url
   useEffect(() => {
     const initialPageNumber = pageNumber ? pageNumber - 1 : 0
-    initialPageNumber < 1 ? initialPageNumber == 1 : initialPageNumber
-    table.setPageIndex(initialPageNumber)
+    if (initialPageNumber < 1) {
+      table.setPageIndex(1)
+      pageSetTo("1")
+    } else if (initialPageNumber >= table.getPageCount()) {
+      table.setPageIndex(table.getPageCount() - 1)
+      pageSetTo(`${table.getPageCount()}`)
+    } else {
+      table.setPageIndex(initialPageNumber)
+    }
   }, [])
 
   return (
@@ -256,13 +263,22 @@ export function DataTable<TData, TValue>({
           | Go to page:
           <input
             type="number"
-            defaultValue={table.getState().pagination.pageIndex + 1}
-            // placeholder={`${table.getState().pagination.pageIndex + 1}`}
+            // defaultValue={table.getState().pagination.pageIndex + 1}
+            placeholder={`${table.getState().pagination.pageIndex + 1}`}
             onChange={(e) => {
               const page = e.target.value ? Number(e.target.value) - 1 : 0
-              table.setPageIndex(page)
-              pageSetTo(`${page + 1}`)
+              if (page < 1) {
+                table.setPageIndex(0)
+                pageSetTo("1")
+              } else if (page >= table.getPageCount()) {
+                table.setPageIndex(table.getPageCount() - 1)
+                pageSetTo(`${table.getPageCount()}`)
+              } else {
+                table.setPageIndex(page)
+                pageSetTo(`${page + 1}`)
+              }
             }}
+            onBlur={(e) => (e.target.value = "")}
             className="border p-1 rounded w-16"
           />
         </span>

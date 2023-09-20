@@ -98,7 +98,7 @@ export function DataTable<TData, TValue>({
   useEffect(() => {
     const initialPageNumber = pageNumber ? pageNumber - 1 : 0
     if (initialPageNumber < 1) {
-      table.setPageIndex(1)
+      table.setPageIndex(0)
       pageSetTo("1")
     } else if (initialPageNumber >= table.getPageCount()) {
       table.setPageIndex(table.getPageCount() - 1)
@@ -108,27 +108,29 @@ export function DataTable<TData, TValue>({
     }
   }, [])
 
+  const getSelectedRowData = table.getSelectedRowModel()
+
   return (
     <div>
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter status..."
           value={(table.getColumn("status")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
+          onChange={(event) => {
             table.getColumn("status")?.setFilterValue(event.target.value)
-          }
+          }}
           className="max-w-sm bg-white"
         />
-        <Button onClick={() => downloadToExcel()} className="ml-4">
+        <Button
+          onClick={() => downloadToExcel(getSelectedRowData.flatRows as [])}
+          className="ml-auto"
+        >
           Export
-        </Button>
-        <Button className="ml-4" onClick={() => table.toggleAllRowsSelected()}>
-          Select All
         </Button>
         {/* <ThemeToggle className="mx-4" /> */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto bg-white">
+            <Button variant="outline" className="ml-4 bg-white">
               Columns
             </Button>
           </DropdownMenuTrigger>
@@ -146,7 +148,22 @@ export function DataTable<TData, TValue>({
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {column.id}
+                    {column.id === "iccid"
+                      ? "ICCID"
+                      : column.id === "imei"
+                      ? "IMEI"
+                      : column.id === "ip"
+                      ? "IP Address"
+                      : column.id === "mac"
+                      ? "MAC Address"
+                      : column.id === "license"
+                      ? "License Status"
+                      : column.id === "mfg"
+                      ? "Device Mfg"
+                      : column.id === "lastconnect"
+                      ? "Last Connect"
+                      : column.id}
+                    {/* {column.id} */}
                   </DropdownMenuCheckboxItem>
                 )
               })}

@@ -1,23 +1,15 @@
-import xlsx, { IJsonSheet } from "json-as-xlsx"
-import getDeviceData from "@/actions/getDevicesData"
+import xlsx, { IJsonSheet, IContent } from "json-as-xlsx"
+import { Row } from "@tanstack/react-table"
 
-export async function downloadToExcel() {
-  const data = await getDeviceData()
-
-  //   provider: string
-  //   customer: string
-  //   iccid: number
-  //   imei: number
-  //   ip: string
-  //   mac: string
-  //   license: string
-  //   mfg: string
-  //   status: "Active" | "Suspended" | "Deactive"
-  //   lastconnect: string
+export async function downloadToExcel<TData extends IContent>(
+  getSelectedRowData: Row<TData>[]
+) {
+  const rowData = getSelectedRowData.map((row) => row.original)
+  console.log("xlxs: ", rowData)
 
   let columns: IJsonSheet[] = [
     {
-      sheet: "Persons",
+      sheet: "Inventory",
       columns: [
         { label: "Provider", value: "provider" },
         { label: "Customer", value: "customer" },
@@ -30,12 +22,12 @@ export async function downloadToExcel() {
         { label: "Status", value: "status" },
         { label: "Last Connect", value: "lastconnect" },
       ],
-      content: data,
+      content: rowData,
     },
   ]
 
   let settings = {
-    fileName: "Device_Management_Inventory_Excel",
+    fileName: `${new Date().toJSON().slice(0, 19)}`,
   }
 
   xlsx(columns, settings)

@@ -1,11 +1,13 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown, MoreHorizontal, ChevronDown } from "lucide-react"
 import Image from "next/image"
+import { ChevronDownIcon } from "@radix-ui/react-icons"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
+import { DataTableSort } from "./components/sorting-header"
 
 import {
   DropdownMenu,
@@ -39,16 +41,39 @@ export type Device = {
   lastconnect: string
 }
 
+// const [position, setPosition] = useState("bottom")
+
 export const columns: ColumnDef<Device>[] = [
   {
     id: "select",
     header: ({ table }) => (
-      <div className="flex flex-row">
+      <div className="flex flex-row items-center">
         <Checkbox
           checked={table.getIsAllPageRowsSelected()}
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
         />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            {/* <Button variant="outline">O</Button> */}
+            <ChevronDownIcon className="ml-2" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            {/* <DropdownMenuRadioGroup value={position} onValueChange={setPosition}> */}
+            <div className="flex items-center space-x-2 p-3">
+              <Checkbox
+                checked={table.getIsAllRowsSelected()}
+                // checked={table.getIsAllPageRowsSelected()}
+                onCheckedChange={(value) =>
+                  table.toggleAllRowsSelected(!!value)
+                }
+              />
+              <p className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                Select All
+              </p>
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     ),
     cell: ({ row }) => (
@@ -65,26 +90,13 @@ export const columns: ColumnDef<Device>[] = [
     accessorKey: "provider",
     // header: "Provider",
     header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Provider
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
+      return <DataTableSort column={column} title="Provider" />
     },
     cell: ({ row }) => {
       const provider = row.getValue("provider")
       return (
-        <div className="flex justify-center">
-          <Image
-            src={`/${provider}.png`}
-            alt="provider"
-            width={64}
-            height={32}
-          />
+        <div className="flex justify-center w-16 h-8 relative">
+          <Image src={`/${provider}.png`} alt="provider" fill />
         </div>
       )
     },
@@ -92,15 +104,7 @@ export const columns: ColumnDef<Device>[] = [
   {
     accessorKey: "customer",
     header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Customer
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
+      return <DataTableSort column={column} title="Customer" />
     },
     cell: ({ row }) => {
       const customer = row.getValue("customer") as string
@@ -110,15 +114,7 @@ export const columns: ColumnDef<Device>[] = [
   {
     accessorKey: "iccid",
     header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          ICCID
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
+      return <DataTableSort column={column} title="ICCID" />
     },
     cell: ({ row }) => {
       const iccid = row.getValue("iccid") as string
@@ -128,57 +124,25 @@ export const columns: ColumnDef<Device>[] = [
   {
     accessorKey: "imei",
     header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          IMEI
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
+      return <DataTableSort column={column} title="IMEI" />
     },
   },
   {
     accessorKey: "ip",
     header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          IP Address
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
+      return <DataTableSort column={column} title="IP Address" />
     },
   },
   {
     accessorKey: "mac",
     header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          MAC Address
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
+      return <DataTableSort column={column} title="MAC Address" />
     },
   },
   {
     accessorKey: "license",
     header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          License Status
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
+      return <DataTableSort column={column} title="License Status" />
     },
     cell: ({ row }) => {
       const license = row.getValue("license") as string
@@ -217,60 +181,29 @@ export const columns: ColumnDef<Device>[] = [
   },
   {
     accessorKey: "mfg",
-    // header: "Device Mfg",
     header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Device Mfg
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
+      return <DataTableSort column={column} title="Device Mfg" />
     },
     cell: ({ row }) => {
       const mfg = row.getValue("mfg")
       return (
-        <div className="flex justify-center">
-          <Image src={`/${mfg}.png`} alt="Device Mfg" width={64} height={32} />
+        <div className="flex justify-center w-16 h-8 relative">
+          <Image src={`/${mfg}.png`} alt="Device Mfg" fill />
         </div>
       )
     },
   },
   {
     accessorKey: "status",
-    // header: "Status",
     header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Status
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
+      return <DataTableSort column={column} title="Status" />
     },
   },
   {
     accessorKey: "lastconnect",
-    // header: "Last Connect",
     header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Last Connect
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
+      return <DataTableSort column={column} title="Last Connect" />
     },
-    // cell: ({ row }) => {
-    //   const lastconnect = row.getValue("lastconnect") as string
-    //   return <p>{lastconnect}</p>
-    // },
   },
   {
     accessorKey: "actions",

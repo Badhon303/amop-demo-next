@@ -8,7 +8,7 @@ export default function Header() {
   const { open, setOpen } = useSidebarHandler()
   return (
     <div className="fixed w-[calc(100vw-36px)] h-12 z-50 page-header">
-      <div className="flex h-full bg-white items-center rounded-xl justify-between px-10">
+      <div className="flex h-full items-center rounded-xl justify-between px-10">
         <ChevronLeft
           className={`${!open && "rotate-180"}`}
           onClick={() => setOpen()}

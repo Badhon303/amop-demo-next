@@ -10,7 +10,7 @@ export default function Sidebar() {
     useSidebarHandler()
   return (
     <div
-      className={`fixed mt-16 bg-white h-[calc(100vh-105px)] rounded-xl  ${
+      className={`fixed mt-16 h-[calc(100vh-105px)] rounded-xl  ${
         open ? "w-60" : "w-0"
       }  overflow-y-auto no-scrollbar`}
     >

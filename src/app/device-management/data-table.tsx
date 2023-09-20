@@ -122,14 +122,14 @@ export function DataTable<TData, TValue>({
           onChange={(event) => {
             table.getColumn("status")?.setFilterValue(event.target.value)
           }}
-          className="max-w-sm bg-white"
+          className="max-w-sm"
         /> */}
         <Input
           type="text"
           placeholder="Filter..."
           value={filtering}
           onChange={(e) => setFiltering(e.target.value)}
-          className="max-w-sm bg-white"
+          className="max-w-sm"
         />
         <Button
           onClick={() => downloadToExcel(getSelectedRowData.flatRows as [])}
@@ -140,7 +140,7 @@ export function DataTable<TData, TValue>({
         {/* <ThemeToggle className="mx-4" /> */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-4 bg-white">
+            <Button variant="outline" className="ml-4">
               Columns
             </Button>
           </DropdownMenuTrigger>

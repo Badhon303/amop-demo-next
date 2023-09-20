@@ -1,12 +1,9 @@
 //circle header
 
 // import { ThemeProvider } from "@/components/theme-provider"
-import Header from "@/components/header"
-import Sidebar from "@/components/sidebar"
 import "./globals.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import { Toaster } from "@/components/ui/toaster"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -27,12 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         {/* <ThemeProvider attribute="class" defaultTheme="light" enableSystem> */}
-        <div className="p-4">
-          <Header />
-          <Sidebar />
-          {children}
-          <Toaster />
-        </div>
+        {children}
         {/* </ThemeProvider> */}
       </body>
     </html>

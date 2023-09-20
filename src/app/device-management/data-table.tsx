@@ -50,6 +50,7 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = useState({})
+  const [filtering, setFiltering] = useState("")
   const table = useReactTable({
     data,
     columns,
@@ -66,7 +67,9 @@ export function DataTable<TData, TValue>({
       columnFilters,
       columnVisibility,
       rowSelection,
+      globalFilter: filtering,
     },
+    onGlobalFilterChange: setFiltering,
   })
 
   const searchParams = useSearchParams()
@@ -113,12 +116,19 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex items-center py-4">
-        <Input
+        {/* <Input
           placeholder="Filter status..."
           value={(table.getColumn("status")?.getFilterValue() as string) ?? ""}
           onChange={(event) => {
             table.getColumn("status")?.setFilterValue(event.target.value)
           }}
+          className="max-w-sm bg-white"
+        /> */}
+        <Input
+          type="text"
+          placeholder="Filter..."
+          value={filtering}
+          onChange={(e) => setFiltering(e.target.value)}
           className="max-w-sm bg-white"
         />
         <Button

@@ -5,7 +5,6 @@ export async function downloadToExcel<TData extends IContent>(
   getSelectedRowData: Row<TData>[]
 ) {
   const rowData = getSelectedRowData.map((row) => row.original)
-  console.log("xlxs: ", rowData)
 
   let columns: IJsonSheet[] = [
     {

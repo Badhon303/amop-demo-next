@@ -168,7 +168,7 @@ export function DataTable<TData, TValue>({
                       ? "MAC Address"
                       : column.id === "license"
                       ? "License Status"
-                      : column.id === "mfg"
+                      : column.id === "manufacturer"
                       ? "Device Mfg"
                       : column.id === "lastconnect"
                       ? "Last Connect"

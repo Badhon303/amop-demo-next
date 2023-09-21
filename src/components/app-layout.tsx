@@ -1,26 +1,3 @@
-// "use client"
-// import { useSidebarHandler } from "@/hooks/use-sidebar-handler"
-
-// export default function DeviceLayout({
-//   children,
-// }: {
-//   children: React.ReactNode
-// }) {
-//   const { open } = useSidebarHandler()
-//   return (
-//     <div
-//       className={`mt-16 ${
-//         open ? "ml-[260px]" : "ml-0"
-//       }  overflow-y-auto no-scrollbar duration-300`}
-//     >
-//       <div className="p-8 rounded-2xl">
-//         <h1 className="text-xl font-bold mb-5">Device Management Inventory</h1>
-//         {children}
-//       </div>
-//     </div>
-//   )
-// }
-
 "use client"
 
 import Image from "next/image"
@@ -30,7 +7,7 @@ import DeviceManagement from "@/app/device-management/page"
 import { useSidebarHandler } from "@/hooks/use-sidebar-handler"
 import Menus from "@/constants/submenuList"
 
-export default function DemoTest({ children }: { children: React.ReactNode }) {
+export default function DemoTest() {
   const {
     open,
     subMenuOpen,
@@ -84,17 +61,12 @@ export default function DemoTest({ children }: { children: React.ReactNode }) {
                     </span>
                     {menu.submenu ? (
                       <ChevronRight
-                        className={`w-3 h-3 ${
-                          subMenuOpen && indexNumber === index && "rotate-90"
-                        } `}
+                        className={`w-3 h-3 ${subMenuOpen && "rotate-90"} `}
                       />
                     ) : null}
                   </Link>
                 </li>
-                {indexNumber === index &&
-                subMenuOpen &&
-                menu.submenu &&
-                open ? (
+                {indexNumber === index && subMenuOpen && menu.submenu ? (
                   <div className="bg-[#f7f9fa]">
                     <ul className="">
                       {menu.submenuItems.map((submenuItem, index) => (
@@ -150,7 +122,9 @@ export default function DemoTest({ children }: { children: React.ReactNode }) {
             </div>
           </div>
         </div>
-        <div className="p-3">{children}</div>
+        <div className="p-3">
+          <h1>Hello</h1>
+        </div>
       </div>
     </div>
   )

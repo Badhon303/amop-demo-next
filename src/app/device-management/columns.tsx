@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal, ChevronDown } from "lucide-react"
+import { MoreHorizontal } from "lucide-react"
 import Image from "next/image"
 import { ChevronDownIcon } from "@radix-ui/react-icons"
 
@@ -28,7 +28,7 @@ import {
 // This type is used to define the shape of the data.
 // Use a Zod schema here if you want.
 export type Device = {
-  id: string
+  _id: string
   provider: string
   customer: string
   iccid: number
@@ -36,9 +36,12 @@ export type Device = {
   ip: string
   mac: string
   license: string
-  mfg: string
+  manufacturer: string
   status: "Active" | "Suspended" | "Deactive"
   lastconnect: string
+  createdAt: string
+  updatedAt: string
+  __v: number
 }
 
 // const [position, setPosition] = useState("bottom")
@@ -180,12 +183,12 @@ export const columns: ColumnDef<Device>[] = [
     },
   },
   {
-    accessorKey: "mfg",
+    accessorKey: "manufacturer",
     header: ({ column }) => {
       return <DataTableSort column={column} title="Device Mfg" />
     },
     cell: ({ row }) => {
-      const mfg = row.getValue("mfg")
+      const mfg = row.getValue("manufacturer")
       return (
         <div className="flex justify-center w-16 h-8 relative">
           <Image src={`/${mfg}.png`} alt="Device Mfg" fill />
@@ -220,7 +223,7 @@ export const columns: ColumnDef<Device>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(device.id)}
+              onClick={() => navigator.clipboard.writeText(device._id)}
             >
               Copy Device ID
             </DropdownMenuItem>

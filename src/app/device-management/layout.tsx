@@ -65,7 +65,7 @@ export default function DemoTest({ children }: { children: React.ReactNode }) {
               <div key={index}>
                 <li className="">
                   <Link
-                    href=""
+                    href={`${menu.submenu ? "" : menu.url}`}
                     className="pl-[25px] pr-[35px] pt-[13px] pb-[12px] border-b-[1px] border-[#eaeaea] hover:text-white focus-within:text-white hover:bg-[#aec2cc] focus-within:bg-[#00c2f3] flex items-center gap-x-2 cursor-pointer"
                     onClick={() => {
                       menu.submenu && setSubMenuOpen()
@@ -103,7 +103,7 @@ export default function DemoTest({ children }: { children: React.ReactNode }) {
                           className="pl-[52px] pr-[35px] pt-[13px] pb-[12px] border-b-[1px] border-[#eaeaea] hover:text-white focus-within:text-white hover:bg-[#aec2cc] focus-within:bg-[#00c2f3]"
                         >
                           <Link
-                            href=""
+                            href={`${submenuItem.url}`}
                             className="flex items-center gap-x-2 cursor-pointer"
                           >
                             <span

@@ -1,91 +1,90 @@
 "use client"
 
-//circle sidebar
+import Image from "next/image"
+import Link from "next/link"
+import { ChevronRight } from "lucide-react"
 import { useSidebarHandler } from "@/hooks/use-sidebar-handler"
 import Menus from "@/constants/submenuList"
-import Link from "next/link"
 
 export default function Sidebar() {
   const { open, subMenuOpen, indexNumber, setSubMenuOpen, setIndexNumber } =
     useSidebarHandler()
   return (
     <div
-      className={`fixed mt-16 h-[calc(100vh-105px)] rounded-xl  ${
-        open ? "w-60" : "w-0"
-      }  overflow-y-auto no-scrollbar`}
+      className={`${
+        open ? "w-[219px]" : "w-[70px]"
+      } border-r-[1px] border-[#eaeaea] h-screen duration-300`}
     >
+      <div className={`${open ? "px-[25px]" : "px-[15px]"}  py-[21px]`}>
+        {open ? (
+          <Image
+            src="/logo_header_detailed_management_300.png"
+            alt="logo"
+            width={169}
+            height={31}
+          />
+        ) : (
+          <h1 className="font-bold text-xs">AMOP</h1>
+        )}
+      </div>
       <div>
-        <div className="p-4">
-          <h1 className="text-center font-bold text-2xl pt-3">Logo</h1>
-        </div>
-        <div className="px-6 pt-4">
-          <hr className="border-gray-200" />
-        </div>
-        <div className="px-6 pt-4">
-          <ul className="flex flex-col space-y-2">
-            {Menus.map((menu, index) => (
-              <li key={index}>
-                <div
-                  className="relative flex justify-between hover:text-white focus-within:text-white rounded hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-500 focus:bg-gray-800 focus-within:bg-gray-800"
+        <ul className="">
+          {Menus.map((menu, index) => (
+            <div key={index}>
+              <li className="">
+                <Link
+                  href={`${menu.submenu ? "" : menu.url}`}
+                  className="pl-[25px] pr-[35px] pt-[13px] pb-[12px] border-b-[1px] border-[#eaeaea] hover:text-white focus-within:text-white hover:bg-[#aec2cc] focus-within:bg-[#00c2f3] flex items-center gap-x-2 cursor-pointer"
                   onClick={() => {
                     menu.submenu && setSubMenuOpen()
                     setIndexNumber(index)
                   }}
                 >
-                  <div className="flex items-center w-full">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
-                      {menu.icon}
-                    </div>
-                    {/* {!menu.submenu && ( */}
-                    <Link
-                      href={`${menu.submenu ? "" : menu.url}`}
-                      className="inline-block w-full py-2 pl-8 pr-4"
-                    >
-                      {menu.title}
-                    </Link>
-                    {/* )} */}
-                  </div>
+                  <span className="block float-left">
+                    <div className="w-3 h-3">{menu.icon}</div>
+                  </span>
+                  <span
+                    className={`text-xs flex-1 font-bold ${!open && "scale-0"}`}
+                  >
+                    {menu.title}
+                  </span>
                   {menu.submenu ? (
-                    <div className="absolute right-0 flex items-center p-1">
-                      <svg
-                        className="w-8 h-8 stroke-current"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="1.5"
-                          d="M15.25 10.75L12 14.25L8.75 10.75"
-                        ></path>
-                      </svg>
-                    </div>
+                    <ChevronRight
+                      className={`w-3 h-3 ${
+                        subMenuOpen && indexNumber === index && "rotate-90"
+                      } `}
+                    />
                   ) : null}
-                </div>
-                {indexNumber === index && subMenuOpen && menu.submenu ? (
-                  <div className="pt-2 pl-4">
-                    <ul className="flex flex-col pl-2 border-l border-gray-200">
-                      {menu.submenuItems.map((submenuItem, index) => (
-                        <li
-                          key={index}
-                          className="hover:text-white focus-within:text-white pb-1"
+                </Link>
+              </li>
+              {indexNumber === index && subMenuOpen && menu.submenu && open ? (
+                <div className="bg-[#f7f9fa]">
+                  <ul className="">
+                    {menu.submenuItems.map((submenuItem, index) => (
+                      <li
+                        key={index}
+                        className="pl-[52px] pr-[35px] pt-[13px] pb-[12px] border-b-[1px] border-[#eaeaea] hover:text-white focus-within:text-white hover:bg-[#aec2cc] focus-within:bg-[#00c2f3]"
+                      >
+                        <Link
+                          href={`${submenuItem.url}`}
+                          className="flex items-center gap-x-2 cursor-pointer"
                         >
-                          <Link
-                            href={menu.url}
-                            className="inline-block w-full px-4 py-2 rounded hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-500 focus:bg-gray-800"
+                          <span
+                            className={`text-xs font-bold ${
+                              !open && "scale-0"
+                            }`}
                           >
                             {submenuItem.title}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ) : null}
-              </li>
-            ))}
-          </ul>
-        </div>
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+            </div>
+          ))}
+        </ul>
       </div>
     </div>
   )

@@ -1,4 +1,5 @@
-//circle header
+import Sidebar from "@/components/sidebar"
+import Header from "@/components/header"
 
 // import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
@@ -24,7 +25,13 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         {/* <ThemeProvider attribute="class" defaultTheme="light" enableSystem> */}
-        {children}
+        <div className="flex">
+          <Sidebar />
+          <div className="flex-1 h-[76px] border-b-[1px] border-[#eaeaea]">
+            <Header />
+            <div className="p-3">{children}</div>
+          </div>
+        </div>
         {/* </ThemeProvider> */}
       </body>
     </html>

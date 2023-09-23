@@ -17,7 +17,7 @@ export async function downloadToExcel<TData extends IContent>(
         { label: "IP Address", value: "ip" },
         { label: "MAC Address", value: "mac" },
         { label: "License Status", value: "license" },
-        { label: "Device Mfg", value: "mfg" },
+        { label: "Device Manufacturer", value: "manufacturer" },
         { label: "Status", value: "status" },
         { label: "Last Connect", value: "lastconnect" },
       ],

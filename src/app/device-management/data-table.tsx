@@ -8,6 +8,8 @@ import { useSearchParams, usePathname } from "next/navigation"
 
 import { downloadToExcel } from "@/lib/xlsx"
 
+import { ChevronDownIcon } from "@radix-ui/react-icons"
+
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -100,7 +102,7 @@ export function DataTable<TData, TValue>({
   //Sets the page with given page number in the url
   useEffect(() => {
     const initialPageNumber = pageNumber ? pageNumber - 1 : 0
-    if (initialPageNumber < 1) {
+    if (initialPageNumber <= 1) {
       table.setPageIndex(0)
       pageSetTo("1")
     } else if (initialPageNumber >= table.getPageCount()) {
@@ -169,11 +171,10 @@ export function DataTable<TData, TValue>({
                       : column.id === "license"
                       ? "License Status"
                       : column.id === "manufacturer"
-                      ? "Device Mfg"
+                      ? "Device Manufacturer"
                       : column.id === "lastconnect"
                       ? "Last Connect"
                       : column.id}
-                    {/* {column.id} */}
                   </DropdownMenuCheckboxItem>
                 )
               })}
@@ -290,16 +291,17 @@ export function DataTable<TData, TValue>({
           | Go to page:
           <input
             type="number"
-            // defaultValue={table.getState().pagination.pageIndex + 1}
             placeholder={`${table.getState().pagination.pageIndex + 1}`}
             onChange={(e) => {
               const page = e.target.value ? Number(e.target.value) - 1 : 0
-              if (page < 1) {
-                table.setPageIndex(0)
-                pageSetTo("1")
+              if (page < 0) {
+                // table.setPageIndex(0)
+                // pageSetTo("1")
+                return false
               } else if (page >= table.getPageCount()) {
                 table.setPageIndex(table.getPageCount() - 1)
                 pageSetTo(`${table.getPageCount()}`)
+                // return false
               } else {
                 table.setPageIndex(page)
                 pageSetTo(`${page + 1}`)

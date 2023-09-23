@@ -58,22 +58,24 @@ export const columns: ColumnDef<Device>[] = [
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            {/* <Button variant="outline">O</Button> */}
             <ChevronDownIcon className="ml-2" />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            {/* <DropdownMenuRadioGroup value={position} onValueChange={setPosition}> */}
             <div className="flex items-center space-x-2 p-3">
               <Checkbox
                 checked={table.getIsAllRowsSelected()}
-                // checked={table.getIsAllPageRowsSelected()}
                 onCheckedChange={(value) =>
                   table.toggleAllRowsSelected(!!value)
                 }
+                id="Select_All"
               />
-              <p className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+
+              <label
+                htmlFor="Select_All"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
                 Select All
-              </p>
+              </label>
             </div>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -168,11 +170,11 @@ export const columns: ColumnDef<Device>[] = [
               <TooltipContent>
                 <div>
                   <p>
-                    <span className="font-bold">Status : </span>Active
+                    <span className="font-bold">Status: </span>Active
                   </p>
                   <p>
-                    <span className="font-bold">Last Updated : </span>2023-07-18
-                    01:11:12 CST
+                    <span className="font-bold">Last Updated: </span>
+                    2023-07-21T16:04:44.000Z
                   </p>
                 </div>
               </TooltipContent>
@@ -185,13 +187,13 @@ export const columns: ColumnDef<Device>[] = [
   {
     accessorKey: "manufacturer",
     header: ({ column }) => {
-      return <DataTableSort column={column} title="Device Mfg" />
+      return <DataTableSort column={column} title="Device Manufacturer" />
     },
     cell: ({ row }) => {
       const mfg = row.getValue("manufacturer")
       return (
         <div className="flex justify-center w-16 h-8 relative">
-          <Image src={`/${mfg}.png`} alt="Device Mfg" fill />
+          <Image src={`/${mfg}.png`} alt="Device Manufacturer" fill />
         </div>
       )
     },
@@ -210,6 +212,7 @@ export const columns: ColumnDef<Device>[] = [
   },
   {
     accessorKey: "actions",
+    header: "Actions",
     cell: ({ row }) => {
       const device = row.original
       return (
@@ -222,17 +225,9 @@ export const columns: ColumnDef<Device>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(device._id)}
-            >
-              Copy Device ID
-            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Archive Device</DropdownMenuItem>
             <DropdownMenuItem>Provision Device</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => location.reload()}>
-              Force Reload
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )

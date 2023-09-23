@@ -34,7 +34,7 @@ const Menus = [
   },
   {
     title: "Mobility",
-    url: "mobility",
+    url: "/mobility",
     icon: <Smartphone className="w-3 h-3" />,
     submenu: true,
     submenuItems: [
@@ -63,14 +63,14 @@ const Menus = [
   },
   {
     title: "People",
-    url: "people",
+    url: "/people",
     icon: <Users className="w-3 h-3" />,
     submenu: true,
     submenuItems: [{ title: "Users", url: "/people/users" }],
   },
   {
     title: "Settings",
-    url: "settings",
+    url: "/settings",
     icon: <Wrench className="w-3 h-3" />,
     submenu: true,
     submenuItems: [
@@ -83,7 +83,7 @@ const Menus = [
   },
   {
     title: "Device Management",
-    url: "device-management",
+    url: "/device-management",
     icon: <Router className="w-3 h-3" />,
     submenu: true,
     submenuItems: [

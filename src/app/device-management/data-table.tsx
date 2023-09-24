@@ -42,6 +42,8 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
 } from "@/components/ui/dropdown-menu"
 
 export function DataTable<TData, TValue>({
@@ -53,6 +55,7 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = useState({})
   const [filtering, setFiltering] = useState("")
+
   const table = useReactTable({
     data,
     columns,
@@ -114,6 +117,9 @@ export function DataTable<TData, TValue>({
   }, [])
 
   const getSelectedRowData = table.getSelectedRowModel()
+  const visibleColumns = table.getVisibleLeafColumns()
+
+  // console.log("getSelectedRowData: ", getSelectedRowData)
 
   return (
     <div>
@@ -134,7 +140,12 @@ export function DataTable<TData, TValue>({
           className="max-w-sm"
         />
         <Button
-          onClick={() => downloadToExcel(getSelectedRowData.flatRows as [])}
+          onClick={() =>
+            downloadToExcel(
+              getSelectedRowData.flatRows as [],
+              visibleColumns as []
+            )
+          }
           className="ml-auto"
         >
           Export
@@ -159,6 +170,7 @@ export function DataTable<TData, TValue>({
                     onCheckedChange={(value: boolean) =>
                       column.toggleVisibility(!!value)
                     }
+                    onSelect={(e) => e.preventDefault()}
                   >
                     {column.id === "iccid"
                       ? "ICCID"
@@ -178,6 +190,13 @@ export function DataTable<TData, TValue>({
                   </DropdownMenuCheckboxItem>
                 )
               })}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => table.toggleAllColumnsVisible(true)}
+              onSelect={(e) => e.preventDefault()}
+            >
+              Select All
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -291,17 +310,24 @@ export function DataTable<TData, TValue>({
           | Go to page:
           <input
             type="number"
+            min="1"
+            onKeyDown={(e) => {
+              if (
+                e.key === "-" ||
+                e.key === "0" ||
+                Number(e.key) >= table.getPageCount()
+              ) {
+                e.preventDefault()
+              }
+            }}
             placeholder={`${table.getState().pagination.pageIndex + 1}`}
             onChange={(e) => {
               const page = e.target.value ? Number(e.target.value) - 1 : 0
               if (page < 0) {
-                // table.setPageIndex(0)
-                // pageSetTo("1")
                 return false
               } else if (page >= table.getPageCount()) {
                 table.setPageIndex(table.getPageCount() - 1)
                 pageSetTo(`${table.getPageCount()}`)
-                // return false
               } else {
                 table.setPageIndex(page)
                 pageSetTo(`${page + 1}`)

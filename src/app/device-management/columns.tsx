@@ -214,7 +214,6 @@ export const columns: ColumnDef<Device>[] = [
     accessorKey: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const device = row.original
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

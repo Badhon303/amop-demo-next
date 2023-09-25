@@ -1,3 +1,11 @@
+import { getDictionary } from "../../../getDictionary"
+
 export default async function DemoTest() {
-  return <h1>Hello ALL</h1>
+  // const lang = await getDictionary(params.lang)
+  return (
+    <>
+      {/* <label>{lang.form.name}</label> */}
+      <h1>Dashboard</h1>
+    </>
+  )
 }

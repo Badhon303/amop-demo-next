@@ -1,0 +1,13 @@
+{
+  "table-header": {
+    "provider": "Provider",
+    "customer": "Customer",
+    "ip-address": "IP Address",
+    "mac-address": "MAC Address",
+    "license": "License Status",
+    "manufacturer": "Device Manufacturer",
+    "status": "Status",
+    "last-connect": "Last Connect",
+    "actions": "Actions"
+  }
+}

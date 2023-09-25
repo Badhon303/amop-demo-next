@@ -312,11 +312,7 @@ export function DataTable<TData, TValue>({
             type="number"
             min="1"
             onKeyDown={(e) => {
-              if (
-                e.key === "-" ||
-                e.key === "0" ||
-                Number(e.key) >= table.getPageCount()
-              ) {
+              if (e.key === "-") {
                 e.preventDefault()
               }
             }}

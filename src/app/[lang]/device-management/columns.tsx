@@ -28,7 +28,7 @@ import {
 // This type is used to define the shape of the data.
 // Use a Zod schema here if you want.
 export type Device = {
-  _id: string
+  id: string
   provider: string
   customer: string
   iccid: number
@@ -39,9 +39,9 @@ export type Device = {
   manufacturer: string
   status: "Active" | "Suspended" | "Deactive"
   lastconnect: string
-  createdAt: string
-  updatedAt: string
-  __v: number
+  // createdAt: string
+  // updatedAt: string
+  // __v: number
 }
 
 // const [position, setPosition] = useState("bottom")

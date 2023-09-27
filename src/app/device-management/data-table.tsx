@@ -5,10 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 // import { ThemeToggle } from "@/components/theme-toggle"
 import { useSearchParams, usePathname } from "next/navigation"
-
 import { downloadToExcel } from "@/lib/xlsx"
-
-import { ChevronDownIcon } from "@radix-ui/react-icons"
 
 import {
   ColumnDef,

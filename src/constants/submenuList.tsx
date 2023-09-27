@@ -14,7 +14,7 @@ import { RiWifiFill } from "react-icons/ri"
 const Menus = [
   {
     title: "Dashboard",
-    url: "/dashboard",
+    url: "",
     icon: <FaHome className="w-[11px] h-[11px]" />,
     submenu: false,
     submenuItems: [],

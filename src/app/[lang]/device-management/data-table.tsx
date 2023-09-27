@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-// import { ThemeToggle } from "@/components/theme-toggle"
 import { useSearchParams, usePathname } from "next/navigation"
 import { downloadToExcel } from "@/lib/xlsx"
 
@@ -119,14 +118,6 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex items-center py-4">
-        {/* <Input
-          placeholder="Filter status..."
-          value={(table.getColumn("status")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => {
-            table.getColumn("status")?.setFilterValue(event.target.value)
-          }}
-          className="max-w-sm"
-        /> */}
         <Input
           type="text"
           placeholder="Filter..."
@@ -145,7 +136,6 @@ export function DataTable<TData, TValue>({
         >
           Export
         </Button>
-        {/* <ThemeToggle className="mx-4" /> */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-4">
@@ -168,21 +158,23 @@ export function DataTable<TData, TValue>({
                     }}
                     onSelect={(e) => e.preventDefault()}
                   >
-                    {column.id === "iccid"
-                      ? "ICCID"
-                      : column.id === "imei"
-                      ? "IMEI"
-                      : column.id === "ip"
-                      ? "IP Address"
-                      : column.id === "mac"
-                      ? "MAC Address"
-                      : column.id === "license"
-                      ? "License Status"
-                      : column.id === "manufacturer"
-                      ? "Device Manufacturer"
-                      : column.id === "lastconnect"
-                      ? "Last Connect"
-                      : column.id}
+                    <div className="cursor-pointer">
+                      {column.id === "iccid"
+                        ? "ICCID"
+                        : column.id === "imei"
+                        ? "IMEI"
+                        : column.id === "ip"
+                        ? "IP Address"
+                        : column.id === "mac"
+                        ? "MAC Address"
+                        : column.id === "license"
+                        ? "License Status"
+                        : column.id === "manufacturer"
+                        ? "Device Manufacturer"
+                        : column.id === "lastconnect"
+                        ? "Last Connect"
+                        : column.id}
+                    </div>
                   </DropdownMenuCheckboxItem>
                 )
               })}
@@ -191,7 +183,7 @@ export function DataTable<TData, TValue>({
               onClick={() => table.toggleAllColumnsVisible(true)}
               onSelect={(e) => e.preventDefault()}
             >
-              Select All
+              <div className="cursor-pointer">Select All</div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

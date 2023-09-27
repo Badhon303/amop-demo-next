@@ -29,7 +29,7 @@ export function DataTableSort<TData, TValue>({
         variant="ghost"
         size="sm"
         className="-ml-3 h-8 data-[state=open]:bg-accent"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        onClick={() => column.toggleSorting()}
       >
         <span>{title}</span>
         {column.getIsSorted() === "desc" ? (

@@ -1,8 +1,7 @@
-import { Device } from "@/app/device-management/columns"
+import { Device } from "@/app/[lang]/device-management/columns"
 
 //Gets the device data
 export default async function getDeviceDataLocal(): Promise<Device[]> {
-  // Fetch data from API here.
   return [
     {
       provider: "at&t",

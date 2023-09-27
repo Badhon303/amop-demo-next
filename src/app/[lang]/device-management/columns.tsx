@@ -7,7 +7,7 @@ import { ChevronDownIcon } from "@radix-ui/react-icons"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { DataTableSort } from "../../device-management/components/sorting-header"
+import { DataTableSort } from "./components/sorting-header"
 
 import {
   DropdownMenu,
@@ -26,7 +26,6 @@ import {
 } from "@/components/ui/tooltip"
 
 // This type is used to define the shape of the data.
-// Use a Zod schema here if you want.
 export type Device = {
   id: string
   provider: string
@@ -39,12 +38,7 @@ export type Device = {
   manufacturer: string
   status: "Active" | "Suspended" | "Deactive"
   lastconnect: string
-  // createdAt: string
-  // updatedAt: string
-  // __v: number
 }
-
-// const [position, setPosition] = useState("bottom")
 
 export const columns: ColumnDef<Device>[] = [
   {
@@ -72,7 +66,7 @@ export const columns: ColumnDef<Device>[] = [
 
               <label
                 htmlFor="Select_All"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                className="text-sm font-medium leading-none cursor-pointer"
               >
                 Select All
               </label>
@@ -93,7 +87,6 @@ export const columns: ColumnDef<Device>[] = [
   },
   {
     accessorKey: "provider",
-    // header: "Provider",
     header: ({ column }) => {
       return <DataTableSort column={column} title="Provider" />
     },
@@ -174,7 +167,7 @@ export const columns: ColumnDef<Device>[] = [
                   </p>
                   <p>
                     <span className="font-bold">Last Updated: </span>
-                    2023-07-21T16:04:44.000Z
+                    2023-07-21 16:04:44
                   </p>
                 </div>
               </TooltipContent>

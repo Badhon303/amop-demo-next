@@ -1,12 +1,14 @@
 import xlsx, { IJsonSheet, IContent } from "json-as-xlsx"
 import { Row } from "@tanstack/react-table"
-import getData from "@/actions/getDevicesData"
+// import getData from "@/actions/getDevicesData"
+import getDeviceDataLocal from "@/actions/getDevicesDataLocal"
 
 export async function downloadToExcel<TData extends IContent>(
   getSelectedRowData: Row<TData>[],
   visibleColumns: Row<TData>[]
 ) {
-  const data = await getData()
+  // const data = await getData()
+  const data = await getDeviceDataLocal()
   const getRowData = getSelectedRowData.map((row) => row.original)
   const values = visibleColumns.map((value) => value.id)
 

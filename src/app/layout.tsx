@@ -35,7 +35,6 @@ export default function RootLayout({
   return (
     <html lang={params.lang}>
       <body className={muliFont.className}>
-        {/* <ThemeProvider attribute="class" defaultTheme="light" enableSystem> */}
         <div className="flex">
           <Sidebar />
           <div className="flex-1 h-[76px] border-b-[1px] border-[#eaeaea]">
@@ -43,7 +42,6 @@ export default function RootLayout({
             <div className="p-3">{children}</div>
           </div>
         </div>
-        {/* </ThemeProvider> */}
       </body>
     </html>
   )

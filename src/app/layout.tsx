@@ -4,9 +4,13 @@ import Header from "@/components/header"
 // import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+// import { Inter } from "next/font/google"
+import localFont from "next/font/local"
 
-const inter = Inter({ subsets: ["latin"] })
+// const inter = Inter({ subsets: ["latin"] })
+const muliFont = localFont({
+  src: "../../public/fonts/Muli-Regular.ttf",
+})
 
 export const metadata: Metadata = {
   title: "Device Management Inventory",
@@ -23,7 +27,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={muliFont.className}>
         {/* <ThemeProvider attribute="class" defaultTheme="light" enableSystem> */}
         <div className="flex">
           <Sidebar />

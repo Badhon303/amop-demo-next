@@ -167,9 +167,10 @@ export function DataTable<TData, TValue>({
                     key={column.id}
                     className="capitalize"
                     checked={column.getIsVisible()}
-                    onCheckedChange={(value: boolean) =>
+                    onCheckedChange={(value: boolean) => {
                       column.toggleVisibility(!!value)
-                    }
+                      column.setFilterValue("")
+                    }}
                     onSelect={(e) => e.preventDefault()}
                   >
                     {column.id === "iccid"

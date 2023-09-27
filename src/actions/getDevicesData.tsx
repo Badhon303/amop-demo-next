@@ -2,7 +2,7 @@ import { Device } from "@/app/device-management/columns"
 
 export default async function getData(): Promise<Device[]> {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/inventory/list`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/inventory/list/page=1&limit=500`,
     {
       cache: "no-store",
       method: "GET",

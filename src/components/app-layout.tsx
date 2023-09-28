@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { ChevronRight, Menu, User2 } from "lucide-react"
-import DeviceManagement from "@/app/device-management/page"
+import DeviceManagement from "@/app/[lang]/device-management/page"
 import { useSidebarHandler } from "@/hooks/use-sidebar-handler"
 import Menus from "@/constants/submenuList"
 

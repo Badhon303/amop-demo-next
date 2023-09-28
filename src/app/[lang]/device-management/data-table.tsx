@@ -318,7 +318,7 @@ export function DataTable<TData, TValue>({
               }
             }}
             onBlur={(e) => (e.target.value = "")}
-            className="border p-1 rounded w-16"
+            className="border p-1 rounded w-16 cursor-pointer"
           />
         </span>
         <select

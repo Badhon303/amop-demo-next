@@ -57,6 +57,7 @@ DataTableProps<TData, TValue>) {
   const pathname = usePathname()
 
   const pageNumber = Number(searchParams.get("page"))
+  const pageSizeAmount = Number(searchParams.get("size"))
 
   const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
     pageIndex: pageNumber <= 1 ? 1 : pageNumber,
@@ -84,7 +85,7 @@ DataTableProps<TData, TValue>) {
     { keepPreviousData: true }
   )
 
-  console.log("dataQuery: ", dataQuery.data)
+  // console.log("dataQuery: ", dataQuery.data)
 
   const table = useReactTable({
     data: dataQuery.data?.results ?? defaultData,
@@ -132,18 +133,6 @@ DataTableProps<TData, TValue>) {
     },
     [searchParams]
   )
-
-  console.log("pageIndex: ", table.getState().pagination.pageIndex)
-
-  // const createQueryString = useCallback(
-  //   (name: string, value: string) => {
-  //     const params = new URLSearchParams(searchParams)
-  //     params.set(name, value)
-
-  //     return params.toString()
-  //   },
-  //   [searchParams]
-  // )
 
   useEffect(() => {
     pageSetTo(`${table.getState().pagination.pageIndex}`)
@@ -356,7 +345,7 @@ DataTableProps<TData, TValue>) {
           value={table.getState().pagination.pageSize}
           onChange={(e) => {
             table.setPageSize(Number(e.target.value))
-            table.setPageIndex(0)
+            table.setPageIndex(1)
           }}
         >
           {[10, 20, 30, 40, 50].map((pageSize) => (

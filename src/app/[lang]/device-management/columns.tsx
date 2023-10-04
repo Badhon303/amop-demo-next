@@ -98,7 +98,12 @@ export const columns: ColumnDef<Device>[] = [
       const provider = row.getValue("provider")
       return (
         <div className="flex justify-center w-16 h-8 relative">
-          <Image src={`/${provider}.png`} alt="provider" fill />
+          <Image
+            // className="object-contain"
+            src={`/${provider}.png`}
+            alt="provider"
+            fill
+          />
         </div>
       )
     },
@@ -190,7 +195,12 @@ export const columns: ColumnDef<Device>[] = [
       const mfg = row.getValue("manufacturer")
       return (
         <div className="flex justify-center w-16 h-8 relative">
-          <Image src={`/${mfg}.png`} alt="Device Manufacturer" fill />
+          <Image
+            // className="object-contain"
+            src={`/${mfg}.png`}
+            alt="Device Manufacturer"
+            fill
+          />
         </div>
       )
     },

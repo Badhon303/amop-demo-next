@@ -27,17 +27,21 @@ import {
 
 // This type is used to define the shape of the data.
 export type Device = {
-  id: string
-  provider: string
-  customer: string
-  iccid: number
-  imei: number
-  ip: string
-  mac: string
-  license: string
-  manufacturer: string
-  status: "Active" | "Suspended" | "Deactive"
-  lastconnect: string
+  results: [
+    {
+      id: string
+      provider: string
+      customer: string
+      iccid: number
+      imei: number
+      ip: string
+      mac: string
+      license: string
+      manufacturer: string
+      status: "Active" | "Suspended" | "Deactive"
+      lastconnect: string
+    }
+  ]
 }
 
 export const columns: ColumnDef<Device>[] = [

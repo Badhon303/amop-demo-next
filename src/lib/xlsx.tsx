@@ -7,7 +7,12 @@ export async function downloadToExcel<TData extends IContent>(
   getSelectedRowData: Row<TData>[],
   visibleColumns: Row<TData>[]
 ) {
-  const data = await getData()
+  const fetchDataOptions = {
+    pageIndex: 1,
+    pageSize: 500,
+  }
+
+  const data = await getData(fetchDataOptions)
   // const data = await getDeviceDataLocal()
   const getRowData = getSelectedRowData.map((row) => row.original)
   const values = visibleColumns.map((value) => value.id)

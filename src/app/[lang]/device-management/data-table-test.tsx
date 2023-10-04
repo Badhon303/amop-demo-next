@@ -1,10 +1,12 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useSearchParams, usePathname } from "next/navigation"
 import { downloadToExcel } from "@/lib/xlsx"
+
+import { useQuery } from "@tanstack/react-query"
 
 import {
   ColumnDef,
@@ -14,7 +16,7 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  // getPaginationRowModel, //Auto Pagination
+  PaginationState,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
@@ -30,7 +32,6 @@ import {
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
-  data: TData[]
 }
 
 import {
@@ -41,27 +42,53 @@ import {
   DropdownMenuSeparator,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu"
+import getData from "@/actions/getDevicesData"
 
 export function DataTable<TData, TValue>({
   columns,
-  data,
-}: DataTableProps<TData, TValue>) {
+}: // data,
+DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = useState({})
   const [filtering, setFiltering] = useState("")
 
-  const [pagination, setPagination] = useState({
-    pageIndex: 0, // page index matlab = page number
-    pageSize: 10, // page size matlab = limit
+  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
+    pageIndex: 1,
+    pageSize: 10,
   })
 
+  const pagination = useMemo(
+    () => ({
+      pageIndex,
+      pageSize,
+    }),
+    [pageIndex, pageSize]
+  )
+
+  const fetchDataOptions = {
+    pageIndex,
+    pageSize,
+  }
+
+  const defaultData = useMemo(() => [], [])
+
+  const dataQuery = useQuery(
+    ["data", fetchDataOptions],
+    async () => await getData(fetchDataOptions),
+    { keepPreviousData: true }
+  )
+
+  console.log("dataQuery: ", dataQuery.data)
+
   const table = useReactTable({
-    data,
+    data: dataQuery.data?.results ?? defaultData,
+    pageCount: dataQuery.data?.totalPages ?? 1,
     columns,
+    manualPagination: true,
     getCoreRowModel: getCoreRowModel(),
-    // getPaginationRowModel: getPaginationRowModel(), // Auto Pagination
+    onPaginationChange: setPagination,
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
@@ -69,6 +96,7 @@ export function DataTable<TData, TValue>({
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     state: {
+      pagination,
       sorting,
       columnFilters,
       columnVisibility,
@@ -80,42 +108,70 @@ export function DataTable<TData, TValue>({
 
   const searchParams = useSearchParams()
   const pathname = usePathname()
-  const pageNumber = Number(searchParams.get("pageNumber"))
 
   //Changes the page number in the url
   const pageSetTo = (pageNumber: string) => {
     history.pushState(
       null,
       "",
-      `${pathname}?${createQueryString("pageNumber", pageNumber)}`
+      `${pathname}?${createQueryString({ page: pageNumber })}`
     )
   }
 
   // Get a new searchParams string by merging the current
   // searchParams with a provided key/value pair
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams)
-      params.set(name, value)
 
+  const createQueryString = useCallback(
+    (searchParams: { [name: string]: string }) => {
+      const params = new URLSearchParams()
+      for (const key in searchParams) {
+        params.set(key, searchParams[key])
+      }
       return params.toString()
     },
     [searchParams]
   )
 
-  //Sets the page with given page number in the url
+  console.log("pageIndex: ", table.getState().pagination.pageIndex)
+
+  // const createQueryString = useCallback(
+  //   (name: string, value: string) => {
+  //     const params = new URLSearchParams(searchParams)
+  //     params.set(name, value)
+
+  //     return params.toString()
+  //   },
+  //   [searchParams]
+  // )
+
+  // Sets the page with given page number in the url
+  // useEffect(() => {
+  //   const initialPageNumber = pageNumber ? pageNumber - 1 : 0
+  // if (initialPageNumber <= 1) {
+  //   table.setPageIndex(0)
+  //   // pageSetTo("1", "10")
+  // } else if (initialPageNumber >= table.getPageCount()) {
+  //   table.setPageIndex(table.getPageCount() - 1)
+  //   // pageSetTo(
+  //   //   `${table.getPageCount()}`,
+  //   //   `${table.getState().pagination.pageSize}`
+  //   // )
+  // } else {
+  //   table.setPageIndex(initialPageNumber)
+  // }
+  // }, [])
+  const pageNumber = Number(searchParams.get("page"))
+
   useEffect(() => {
-    const initialPageNumber = pageNumber ? pageNumber - 1 : 0
-    if (initialPageNumber <= 1) {
-      table.setPageIndex(0)
-      pageSetTo("1")
-    } else if (initialPageNumber >= table.getPageCount()) {
-      table.setPageIndex(table.getPageCount() - 1)
-      pageSetTo(`${table.getPageCount()}`)
-    } else {
-      table.setPageIndex(initialPageNumber)
-    }
-  }, [])
+    // if (pageNumber <= 1) {
+    //   table.setPageIndex(2)
+    // } else if (pageNumber >= table.getPageCount()) {
+    //   table.setPageIndex(table.getPageCount())
+    // } else {
+    //   table.setPageIndex(pageNumber)
+    // }
+    pageSetTo(`${table.getState().pagination.pageIndex}`)
+  }, [pagination])
 
   const getSelectedRowData = table.getSelectedRowModel()
   const visibleColumns = table.getVisibleLeafColumns()
@@ -253,8 +309,7 @@ export function DataTable<TData, TValue>({
           <button
             className="border rounded p-1"
             onClick={() => {
-              table.setPageIndex(0)
-              pageSetTo("1")
+              table.setPageIndex(1)
             }}
             disabled={!table.getCanPreviousPage()}
           >
@@ -264,9 +319,8 @@ export function DataTable<TData, TValue>({
             className="border rounded p-1"
             onClick={() => {
               table.previousPage()
-              pageSetTo(`${table.getState().pagination.pageIndex}`)
             }}
-            disabled={!table.getCanPreviousPage()}
+            disabled={table.getState().pagination.pageIndex === 1}
           >
             {"<"}
           </button>
@@ -275,7 +329,6 @@ export function DataTable<TData, TValue>({
             id="next-page"
             onClick={() => {
               table.nextPage()
-              pageSetTo(`${table.getState().pagination.pageIndex + 2}`)
             }}
             disabled={!table.getCanNextPage()}
           >
@@ -284,8 +337,7 @@ export function DataTable<TData, TValue>({
           <button
             className="border rounded p-1"
             onClick={() => {
-              table.setPageIndex(table.getPageCount() - 1)
-              pageSetTo(`${table.getPageCount()}`)
+              table.setPageIndex(table.getPageCount())
             }}
             disabled={!table.getCanNextPage()}
           >
@@ -295,8 +347,8 @@ export function DataTable<TData, TValue>({
         <span className="flex items-center gap-1">
           <div>Page</div>
           <strong>
-            {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
+            {table.getState().pagination.pageIndex} of{" "}
+            {table.getPageCount() - 1}
           </strong>
         </span>
         <span className="flex items-center gap-1">
@@ -309,17 +361,15 @@ export function DataTable<TData, TValue>({
                 e.preventDefault()
               }
             }}
-            placeholder={`${table.getState().pagination.pageIndex + 1}`}
+            placeholder={`${table.getState().pagination.pageIndex}`}
             onChange={(e) => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0
-              if (page < 0) {
+              const page = e.target.value ? Number(e.target.value) : 1
+              if (page < 1) {
                 return false
               } else if (page >= table.getPageCount()) {
-                table.setPageIndex(table.getPageCount() - 1)
-                pageSetTo(`${table.getPageCount()}`)
+                table.setPageIndex(table.getPageCount())
               } else {
                 table.setPageIndex(page)
-                pageSetTo(`${page + 1}`)
               }
             }}
             onBlur={(e) => (e.target.value = "")}
@@ -331,7 +381,6 @@ export function DataTable<TData, TValue>({
           onChange={(e) => {
             table.setPageSize(Number(e.target.value))
             table.setPageIndex(0)
-            pageSetTo("1")
           }}
         >
           {[10, 20, 30, 40, 50].map((pageSize) => (

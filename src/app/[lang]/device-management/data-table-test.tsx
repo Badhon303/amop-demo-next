@@ -53,9 +53,13 @@ DataTableProps<TData, TValue>) {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = useState({})
   const [filtering, setFiltering] = useState("")
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+
+  const pageNumber = Number(searchParams.get("page"))
 
   const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
-    pageIndex: 1,
+    pageIndex: pageNumber <= 1 ? 1 : pageNumber,
     pageSize: 10,
   })
 
@@ -106,9 +110,6 @@ DataTableProps<TData, TValue>) {
     onGlobalFilterChange: setFiltering,
   })
 
-  const searchParams = useSearchParams()
-  const pathname = usePathname()
-
   //Changes the page number in the url
   const pageSetTo = (pageNumber: string) => {
     history.pushState(
@@ -144,32 +145,7 @@ DataTableProps<TData, TValue>) {
   //   [searchParams]
   // )
 
-  // Sets the page with given page number in the url
-  // useEffect(() => {
-  //   const initialPageNumber = pageNumber ? pageNumber - 1 : 0
-  // if (initialPageNumber <= 1) {
-  //   table.setPageIndex(0)
-  //   // pageSetTo("1", "10")
-  // } else if (initialPageNumber >= table.getPageCount()) {
-  //   table.setPageIndex(table.getPageCount() - 1)
-  //   // pageSetTo(
-  //   //   `${table.getPageCount()}`,
-  //   //   `${table.getState().pagination.pageSize}`
-  //   // )
-  // } else {
-  //   table.setPageIndex(initialPageNumber)
-  // }
-  // }, [])
-  const pageNumber = Number(searchParams.get("page"))
-
   useEffect(() => {
-    // if (pageNumber <= 1) {
-    //   table.setPageIndex(2)
-    // } else if (pageNumber >= table.getPageCount()) {
-    //   table.setPageIndex(table.getPageCount())
-    // } else {
-    //   table.setPageIndex(pageNumber)
-    // }
     pageSetTo(`${table.getState().pagination.pageIndex}`)
   }, [pagination])
 

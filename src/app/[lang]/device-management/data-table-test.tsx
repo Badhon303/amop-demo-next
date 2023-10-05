@@ -6,8 +6,6 @@ import { Input } from "@/components/ui/input"
 import { useSearchParams, usePathname } from "next/navigation"
 import { downloadToExcel } from "@/lib/xlsx"
 
-import { useQuery } from "@tanstack/react-query"
-
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -16,7 +14,6 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  PaginationState,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
@@ -55,41 +52,21 @@ DataTableProps<TData, TValue>) {
   const [filtering, setFiltering] = useState("")
   const searchParams = useSearchParams()
   const pathname = usePathname()
-
   const pageNumber = Number(searchParams.get("page"))
-  const pageSizeAmount = Number(searchParams.get("size"))
+  const [tableData, setTableData] = useState({ results: [], totalPages: 1 })
 
-  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
+  const [pagination, setPagination] = useState({
     pageIndex: pageNumber <= 1 ? 1 : pageNumber,
+
+    // > tableData.totalPages
+    // ? tableData.totalPages
+    // : 1,
     pageSize: 10,
   })
 
-  const pagination = useMemo(
-    () => ({
-      pageIndex,
-      pageSize,
-    }),
-    [pageIndex, pageSize]
-  )
-
-  const fetchDataOptions = {
-    pageIndex,
-    pageSize,
-  }
-
-  const defaultData = useMemo(() => [], [])
-
-  const dataQuery = useQuery(
-    ["data", fetchDataOptions],
-    async () => await getData(fetchDataOptions),
-    { keepPreviousData: true }
-  )
-
-  // console.log("dataQuery: ", dataQuery.data)
-
   const table = useReactTable({
-    data: dataQuery.data?.results ?? defaultData,
-    pageCount: dataQuery.data?.totalPages ?? 1,
+    data: tableData.results ?? [],
+    pageCount: tableData.totalPages ?? 1,
     columns,
     manualPagination: true,
     getCoreRowModel: getCoreRowModel(),
@@ -135,6 +112,27 @@ DataTableProps<TData, TValue>) {
   )
 
   useEffect(() => {
+    if (tableData.totalPages != 1 && pageNumber > tableData.totalPages) {
+      setPagination({
+        pageIndex: tableData.totalPages - 1, // page index matlab = page number
+        pageSize: 10, // page size matlab = limit
+      })
+    }
+  }, [tableData.totalPages])
+
+  useEffect(() => {
+    const pageHandler = async () => {
+      const data = await getData(pagination)
+      console.log("data: ", data)
+      setTableData(data)
+      // if (pageNumber > data.totalPages) {
+      //   setPagination({
+      //     pageIndex: 1, // page index matlab = page number
+      //     pageSize: 10, // page size matlab = limit
+      //   })
+      // }
+    }
+    pageHandler()
     pageSetTo(`${table.getState().pagination.pageIndex}`)
   }, [pagination])
 

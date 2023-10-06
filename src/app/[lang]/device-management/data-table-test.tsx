@@ -86,8 +86,6 @@ DataTableProps<TData, TValue>) {
   })
 
   const { sortColumn, sortColumnOrder } = useTableHandler()
-  console.log("sortColumn: ", sortColumn)
-  console.log("sortColumnOrder: ", sortColumnOrder)
 
   //Changes the page number in the url
   const pageSetTo = (pageNumber: string, pageLimit: string) => {
@@ -118,7 +116,7 @@ DataTableProps<TData, TValue>) {
   useEffect(() => {
     if (tableData.totalPages != 1 && pageNumber > tableData.totalPages) {
       setPagination({
-        pageIndex: tableData.totalPages - 1,
+        pageIndex: tableData.totalPages,
         pageSize: 10,
       })
     } else if (pageLimit > 500) {
@@ -304,18 +302,38 @@ DataTableProps<TData, TValue>) {
             className="border rounded p-1"
             id="next-page"
             onClick={() => {
-              table.nextPage()
+              if (
+                table.getState().pagination.pageIndex ===
+                table.getPageCount() - 1
+              ) {
+                setPagination({
+                  pageIndex: tableData.totalPages,
+                  pageSize: table.getState().pagination.pageSize,
+                })
+              } else {
+                table.nextPage()
+              }
             }}
-            disabled={!table.getCanNextPage()}
+            // disabled={!table.getCanNextPage()}
+            disabled={
+              table.getState().pagination.pageIndex === table.getPageCount()
+            }
           >
             {">"}
           </button>
           <button
             className="border rounded p-1"
             onClick={() => {
-              table.setPageIndex(table.getPageCount())
+              // table.setPageIndex(table.getPageCount())
+              setPagination({
+                pageIndex: tableData.totalPages,
+                pageSize: table.getState().pagination.pageSize,
+              })
             }}
-            disabled={!table.getCanNextPage()}
+            // disabled={!table.getCanNextPage()}
+            disabled={
+              table.getState().pagination.pageIndex === table.getPageCount()
+            }
           >
             {">>"}
           </button>
@@ -324,7 +342,7 @@ DataTableProps<TData, TValue>) {
           <div>Page</div>
           <strong>
             {table.getState().pagination.pageIndex} of{" "}
-            {table.getPageCount() <= 1 ? 1 : table.getPageCount() - 1}
+            {table.getPageCount() <= 1 ? 1 : table.getPageCount()}
           </strong>
         </span>
         <span className="flex items-center gap-1">
@@ -343,7 +361,10 @@ DataTableProps<TData, TValue>) {
               if (page < 1) {
                 return false
               } else if (page >= table.getPageCount()) {
-                table.setPageIndex(table.getPageCount())
+                setPagination({
+                  pageIndex: tableData.totalPages,
+                  pageSize: table.getState().pagination.pageSize,
+                })
               } else {
                 table.setPageIndex(page)
               }

@@ -57,10 +57,6 @@ DataTableProps<TData, TValue>) {
 
   const [pagination, setPagination] = useState({
     pageIndex: pageNumber <= 1 ? 1 : pageNumber,
-
-    // > tableData.totalPages
-    // ? tableData.totalPages
-    // : 1,
     pageSize: 10,
   })
 
@@ -114,8 +110,8 @@ DataTableProps<TData, TValue>) {
   useEffect(() => {
     if (tableData.totalPages != 1 && pageNumber > tableData.totalPages) {
       setPagination({
-        pageIndex: tableData.totalPages - 1, // page index matlab = page number
-        pageSize: 10, // page size matlab = limit
+        pageIndex: tableData.totalPages - 1,
+        pageSize: 10,
       })
     }
   }, [tableData.totalPages])
@@ -125,12 +121,7 @@ DataTableProps<TData, TValue>) {
       const data = await getData(pagination)
       console.log("data: ", data)
       setTableData(data)
-      // if (pageNumber > data.totalPages) {
-      //   setPagination({
-      //     pageIndex: 1, // page index matlab = page number
-      //     pageSize: 10, // page size matlab = limit
-      //   })
-      // }
+      console.log("tableData: ", data)
     }
     pageHandler()
     pageSetTo(`${table.getState().pagination.pageIndex}`)
@@ -311,7 +302,7 @@ DataTableProps<TData, TValue>) {
           <div>Page</div>
           <strong>
             {table.getState().pagination.pageIndex} of{" "}
-            {table.getPageCount() - 1}
+            {table.getPageCount() != 0 ? table.getPageCount() - 1 : 1}
           </strong>
         </span>
         <span className="flex items-center gap-1">

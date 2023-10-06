@@ -5,16 +5,17 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useSearchParams, usePathname } from "next/navigation"
 import { downloadToExcel } from "@/lib/xlsx"
+import { useTableHandler } from "@/hooks/use-table-handler"
 
 import {
   ColumnDef,
   ColumnFiltersState,
-  SortingState,
+  // SortingState,
   VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getSortedRowModel,
+  // getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
 
@@ -45,7 +46,7 @@ export function DataTable<TData, TValue>({
   columns,
 }: // data,
 DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([])
+  // const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = useState({})
@@ -53,11 +54,11 @@ DataTableProps<TData, TValue>) {
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const pageNumber = Number(searchParams.get("page"))
+  const pageLimit = Number(searchParams.get("limit"))
   const [tableData, setTableData] = useState({ results: [], totalPages: 1 })
-
   const [pagination, setPagination] = useState({
     pageIndex: pageNumber <= 1 ? 1 : pageNumber,
-    pageSize: 10,
+    pageSize: pageLimit <= 1 ? 10 : pageLimit,
   })
 
   const table = useReactTable({
@@ -67,15 +68,15 @@ DataTableProps<TData, TValue>) {
     manualPagination: true,
     getCoreRowModel: getCoreRowModel(),
     onPaginationChange: setPagination,
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
+    // onSortingChange: setSorting,
+    // getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     state: {
       pagination,
-      sorting,
+      // sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
@@ -84,12 +85,19 @@ DataTableProps<TData, TValue>) {
     onGlobalFilterChange: setFiltering,
   })
 
+  const { sortColumn, sortColumnOrder } = useTableHandler()
+  console.log("sortColumn: ", sortColumn)
+  console.log("sortColumnOrder: ", sortColumnOrder)
+
   //Changes the page number in the url
-  const pageSetTo = (pageNumber: string) => {
+  const pageSetTo = (pageNumber: string, pageLimit: string) => {
     history.pushState(
       null,
       "",
-      `${pathname}?${createQueryString({ page: pageNumber })}`
+      `${pathname}?${createQueryString({
+        page: pageNumber,
+        limit: pageLimit,
+      })}`
     )
   }
 
@@ -113,19 +121,33 @@ DataTableProps<TData, TValue>) {
         pageIndex: tableData.totalPages - 1,
         pageSize: 10,
       })
+    } else if (pageLimit > 500) {
+      setPagination({
+        pageIndex: table.getState().pagination.pageIndex,
+        pageSize: 10,
+      })
     }
   }, [tableData.totalPages])
 
+  const queryOptions = {
+    queryString: `page=${table.getState().pagination.pageIndex}&limit=${
+      table.getState().pagination.pageSize
+    }${sortColumnOrder && "&sortBy="}${
+      sortColumnOrder && `${sortColumn}:${sortColumnOrder}`
+    }`,
+  }
+
   useEffect(() => {
     const pageHandler = async () => {
-      const data = await getData(pagination)
-      console.log("data: ", data)
+      const data = await getData(queryOptions)
       setTableData(data)
-      console.log("tableData: ", data)
     }
     pageHandler()
-    pageSetTo(`${table.getState().pagination.pageIndex}`)
-  }, [pagination])
+    pageSetTo(
+      `${table.getState().pagination.pageIndex}`,
+      `${table.getState().pagination.pageSize}`
+    )
+  }, [pagination, sortColumnOrder])
 
   const getSelectedRowData = table.getSelectedRowModel()
   const visibleColumns = table.getVisibleLeafColumns()
@@ -302,7 +324,7 @@ DataTableProps<TData, TValue>) {
           <div>Page</div>
           <strong>
             {table.getState().pagination.pageIndex} of{" "}
-            {table.getPageCount() != 0 ? table.getPageCount() - 1 : 1}
+            {table.getPageCount() <= 1 ? 1 : table.getPageCount() - 1}
           </strong>
         </span>
         <span className="flex items-center gap-1">

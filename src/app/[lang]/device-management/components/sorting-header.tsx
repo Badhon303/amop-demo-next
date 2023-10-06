@@ -5,6 +5,8 @@ import {
 } from "@radix-ui/react-icons"
 import { Column } from "@tanstack/react-table"
 
+import { useTableHandler } from "@/hooks/use-table-handler"
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
@@ -19,6 +21,9 @@ export function DataTableSort<TData, TValue>({
   title,
   className,
 }: DataTableColumnHeaderProps<TData, TValue>) {
+  const { sortColumn, sortColumnOrder, setSortColumn, setSortColumnOrder } =
+    useTableHandler()
+
   if (!column.getCanSort()) {
     return <div className={cn(className)}>{title}</div>
   }
@@ -29,12 +34,22 @@ export function DataTableSort<TData, TValue>({
         variant="ghost"
         size="sm"
         className="-ml-3 h-8 data-[state=open]:bg-accent"
-        onClick={() => column.toggleSorting()}
+        onClick={() => {
+          // column.toggleSorting()
+          setSortColumn(`${column.id}`)
+          if (sortColumnOrder === "") {
+            setSortColumnOrder("asc")
+          } else if (sortColumnOrder === "asc") {
+            setSortColumnOrder("desc")
+          } else {
+            setSortColumnOrder("")
+          }
+        }}
       >
         <span>{title}</span>
-        {column.getIsSorted() === "desc" ? (
+        {sortColumnOrder === "desc" && sortColumn === column.id ? (
           <ArrowDownIcon className="ml-2 h-4 w-4" />
-        ) : column.getIsSorted() === "asc" ? (
+        ) : sortColumnOrder === "asc" && sortColumn === column.id ? (
           <ArrowUpIcon className="ml-2 h-4 w-4" />
         ) : (
           <CaretSortIcon className="ml-2 h-4 w-4" />

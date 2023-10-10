@@ -7,9 +7,11 @@ import { useSearchParams, usePathname } from "next/navigation"
 import { downloadToExcel } from "@/lib/xlsx"
 import { useTableHandler } from "@/hooks/use-table-handler"
 
+import { useQuery } from "@tanstack/react-query"
+
 import {
   ColumnDef,
-  ColumnFiltersState,
+  // ColumnFiltersState,
   // SortingState,
   VisibilityState,
   flexRender,
@@ -41,13 +43,14 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu"
 import getData from "@/actions/getDevicesData"
+// import getSearchData from "@/actions/getDevicesSearchData"
 
 export function DataTable<TData, TValue>({
   columns,
 }: // data,
 DataTableProps<TData, TValue>) {
   // const [sorting, setSorting] = useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = useState({})
   const [filtering, setFiltering] = useState("")
@@ -55,37 +58,52 @@ DataTableProps<TData, TValue>) {
   const pathname = usePathname()
   const pageNumber = Number(searchParams.get("page"))
   const pageLimit = Number(searchParams.get("limit"))
-  const [tableData, setTableData] = useState({ results: [], totalPages: 1 })
+  const { sortColumn, sortColumnOrder } = useTableHandler()
+  // const [tableData, setTableData] = useState({ results: [], totalPages: 1 })
   const [pagination, setPagination] = useState({
     pageIndex: pageNumber <= 1 ? 1 : pageNumber,
     pageSize: pageLimit <= 1 ? 10 : pageLimit,
   })
 
+  const queryOptions = {
+    queryString: `page=${pagination.pageIndex}&limit=${pagination.pageSize}${
+      sortColumnOrder && "&sortBy="
+    }${sortColumnOrder && `${sortColumn}:${sortColumnOrder}`}`,
+  }
+
+  const defaultData = useMemo(() => [], [])
+
+  const dataQuery = useQuery(
+    ["tableData", queryOptions],
+    async () => await getData(queryOptions),
+    { keepPreviousData: true }
+  )
+
   const table = useReactTable({
-    data: tableData.results ?? [],
-    pageCount: tableData.totalPages ?? 1,
+    // data: tableData.results ?? [],
+    data: dataQuery.data?.results ?? defaultData,
+    // pageCount: tableData.totalPages ?? 1,
+    pageCount: dataQuery.data?.totalPages ?? 1,
     columns,
     manualPagination: true,
     getCoreRowModel: getCoreRowModel(),
     onPaginationChange: setPagination,
     // onSortingChange: setSorting,
     // getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
+    // onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     state: {
       pagination,
       // sorting,
-      columnFilters,
+      // columnFilters,
       columnVisibility,
       rowSelection,
       globalFilter: filtering,
     },
     onGlobalFilterChange: setFiltering,
   })
-
-  const { sortColumn, sortColumnOrder } = useTableHandler()
 
   //Changes the page number in the url
   const pageSetTo = (pageNumber: string, pageLimit: string) => {
@@ -101,7 +119,6 @@ DataTableProps<TData, TValue>) {
 
   // Get a new searchParams string by merging the current
   // searchParams with a provided key/value pair
-
   const createQueryString = useCallback(
     (searchParams: { [name: string]: string }) => {
       const params = new URLSearchParams()
@@ -114,9 +131,12 @@ DataTableProps<TData, TValue>) {
   )
 
   useEffect(() => {
-    if (tableData.totalPages != 1 && pageNumber > tableData.totalPages) {
+    if (
+      dataQuery.data?.totalPages != 1 &&
+      pageNumber > dataQuery.data?.totalPages
+    ) {
       setPagination({
-        pageIndex: tableData.totalPages,
+        pageIndex: dataQuery.data?.totalPages,
         pageSize: 10,
       })
     } else if (pageLimit > 500) {
@@ -125,22 +145,9 @@ DataTableProps<TData, TValue>) {
         pageSize: 10,
       })
     }
-  }, [tableData.totalPages])
-
-  const queryOptions = {
-    queryString: `page=${table.getState().pagination.pageIndex}&limit=${
-      table.getState().pagination.pageSize
-    }${sortColumnOrder && "&sortBy="}${
-      sortColumnOrder && `${sortColumn}:${sortColumnOrder}`
-    }`,
-  }
+  }, [dataQuery.data?.totalPages])
 
   useEffect(() => {
-    const pageHandler = async () => {
-      const data = await getData(queryOptions)
-      setTableData(data)
-    }
-    pageHandler()
     pageSetTo(
       `${table.getState().pagination.pageIndex}`,
       `${table.getState().pagination.pageSize}`
@@ -302,12 +309,13 @@ DataTableProps<TData, TValue>) {
             className="border rounded p-1"
             id="next-page"
             onClick={() => {
+              // table.nextPage()
               if (
                 table.getState().pagination.pageIndex ===
                 table.getPageCount() - 1
               ) {
                 setPagination({
-                  pageIndex: tableData.totalPages,
+                  pageIndex: dataQuery.data?.totalPages,
                   pageSize: table.getState().pagination.pageSize,
                 })
               } else {
@@ -316,7 +324,7 @@ DataTableProps<TData, TValue>) {
             }}
             // disabled={!table.getCanNextPage()}
             disabled={
-              table.getState().pagination.pageIndex === table.getPageCount()
+              table.getState().pagination.pageIndex >= table.getPageCount()
             }
           >
             {">"}
@@ -326,13 +334,13 @@ DataTableProps<TData, TValue>) {
             onClick={() => {
               // table.setPageIndex(table.getPageCount())
               setPagination({
-                pageIndex: tableData.totalPages,
+                pageIndex: dataQuery.data?.totalPages,
                 pageSize: table.getState().pagination.pageSize,
               })
             }}
             // disabled={!table.getCanNextPage()}
             disabled={
-              table.getState().pagination.pageIndex === table.getPageCount()
+              table.getState().pagination.pageIndex >= table.getPageCount()
             }
           >
             {">>"}
@@ -362,7 +370,7 @@ DataTableProps<TData, TValue>) {
                 return false
               } else if (page >= table.getPageCount()) {
                 setPagination({
-                  pageIndex: tableData.totalPages,
+                  pageIndex: dataQuery.data?.totalPages,
                   pageSize: table.getState().pagination.pageSize,
                 })
               } else {

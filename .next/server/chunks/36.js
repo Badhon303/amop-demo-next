@@ -1,0 +1,1 @@
+"use strict";exports.id=36,exports.ids=[36],exports.modules={36:e=>{e.exports=JSON.parse('{"tableHeader":{"provider":"Provider","customer":"Customer","ipAddress":"IP Address","macAddress":"MAC Address","license":"License Status","manufacturer":"Device Manufacturer","status":"Status","lastConnect":"Last Connect","actions":"Actions"},"common":{"exportButton":"Export"}}')}};

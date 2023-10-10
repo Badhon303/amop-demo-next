@@ -103,6 +103,7 @@ DataTableProps<TData, TValue>) {
       globalFilter: filtering,
     },
     onGlobalFilterChange: setFiltering,
+    getRowId: (row: any) => row.id,
   })
 
   //Changes the page number in the url
@@ -156,6 +157,8 @@ DataTableProps<TData, TValue>) {
 
   const getSelectedRowData = table.getSelectedRowModel()
   const visibleColumns = table.getVisibleLeafColumns()
+
+  console.log("getSelectedRowData: ", getSelectedRowData)
 
   return (
     <div>
@@ -283,7 +286,7 @@ DataTableProps<TData, TValue>) {
       </div>
       <div className="flex-1 text-sm text-muted-foreground">
         {table.getFilteredSelectedRowModel().rows.length} of{" "}
-        {table.getFilteredRowModel().rows.length} row(s) selected.
+        {dataQuery.data?.totalResults} row(s) selected.
       </div>
       <div className="flex flex-col md:flex-row items-center justify-end space-x-2 py-4">
         <div className="space-x-2">

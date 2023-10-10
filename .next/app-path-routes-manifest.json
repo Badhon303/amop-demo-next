@@ -1,7 +1,0 @@
-{
-  "/_not-found": "/_not-found",
-  "/favicon.ico/route": "/favicon.ico",
-  "/page": "/",
-  "/[lang]/dashboard/page": "/[lang]/dashboard",
-  "/[lang]/device-management/page": "/[lang]/device-management"
-}

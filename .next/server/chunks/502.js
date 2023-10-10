@@ -1,1 +1,0 @@
-"use strict";exports.id=502,exports.ids=[502],exports.modules={7502:e=>{e.exports=JSON.parse('{"tableHeader":{"provider":"প্রদানকারী","customer":"ক্রেতা","ip-address":"আইপি ঠিকানা","mac-address":"ম্যাক ঠিকানা","license":"লাইসেন্স","manufacturer":"প্রস্তুতকারক","status":"অবস্থা","lastConnect":"শেষ সংযোগ","actions":"কর্ম"},"common":{"exportButton":"রপ্তানি"}}')}};
